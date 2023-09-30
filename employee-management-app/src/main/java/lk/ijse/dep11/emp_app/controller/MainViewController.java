@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import lk.ijse.dep11.emp_app.tm.Employee;
 
 public class MainViewController {
     public AnchorPane root;
@@ -13,7 +14,7 @@ public class MainViewController {
     public TextField txtContact;
     public Button btnSave;
     public Button btnDelete;
-    public TableView tbvEmployees;
+    public TableView<Employee> tbvEmployees;
     public TextField txtSearch;
     public Button btnNew;
 
@@ -24,5 +25,21 @@ public class MainViewController {
     }
 
     public void btnNewOnAction(ActionEvent actionEvent) {
+    }
+
+    private boolean isDataValid(){
+        //Name Validation
+        if(!txtName.getText().strip().matches("[a-zA-Z\\s]+")){
+            txtName.requestFocus();
+            txtName.selectAll();
+            return false;
+        }
+        //Contact Number Validation
+        if(!txtContact.getText().strip().matches("0\\d{2}-\\d{7}")){
+            txtContact.requestFocus();
+            txtContact.selectAll();
+            return false;
+        }
+        return true;
     }
 }
