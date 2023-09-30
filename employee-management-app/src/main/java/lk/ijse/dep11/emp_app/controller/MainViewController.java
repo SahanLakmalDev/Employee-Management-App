@@ -56,6 +56,17 @@ public class MainViewController {
     }
 
     public void btnNewOnAction(ActionEvent actionEvent) {
+        txtId.setText(getNewEmployeeId());
+        for(Control control : new Control[]{txtName, txtContact, btnSave}){
+            if(control instanceof TextField){
+                ((TextField) control).clear();
+                control.setDisable(false);
+            }else{
+                control.setDisable(false);
+            }
+        }
+        txtName.requestFocus();
+        tbvEmployees.getSelectionModel().clearSelection();
     }
 
     private List<Employee> getEmployeeList(){
