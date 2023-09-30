@@ -21,7 +21,7 @@
             <Font size="17.0" />
          </font>
       </Label>
-      <TextField fx:id="txtId" layoutX="81.0" layoutY="154.0" prefHeight="24.0" prefWidth="399.0" AnchorPane.leftAnchor="81.0" AnchorPane.rightAnchor="79.0" />
+      <TextField fx:id="txtId" alignment="CENTER" layoutX="81.0" layoutY="154.0" prefHeight="24.0" prefWidth="399.0" AnchorPane.leftAnchor="81.0" AnchorPane.rightAnchor="79.0" />
       <Label layoutX="253.0" layoutY="190.0" text="NAME">
          <font>
             <Font size="17.0" />
@@ -34,7 +34,7 @@
          </font>
       </Label>
       <TextField fx:id="txtContact" alignment="CENTER" layoutX="79.0" layoutY="326.0" prefHeight="24.0" prefWidth="399.0" promptText="Eg: 0XX-XXXXXXX" />
-      <Button fx:id="btnSave" layoutX="131.0" layoutY="379.0" mnemonicParsing="false" onAction="#btnSaveOnAction" style="-fx-background-color: yellow; -fx-font-weight: bold;" text="SAVE" />
+      <Button fx:id="btnSave" defaultButton="true" layoutX="131.0" layoutY="379.0" mnemonicParsing="false" onAction="#btnSaveOnAction" style="-fx-background-color: yellow; -fx-font-weight: bold;" text="SAVE" />
       <Button fx:id="btnDelete" layoutX="373.0" layoutY="379.0" mnemonicParsing="false" onAction="#btnDeleteOnAction" style="-fx-background-color: red; -fx-font-weight: bold;" text="DELETE" textFill="#e8d6d6" />
       <TableView fx:id="tbvEmployees" layoutX="12.0" layoutY="444.0" prefHeight="290.0" prefWidth="513.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="8.0">
         <columns>
