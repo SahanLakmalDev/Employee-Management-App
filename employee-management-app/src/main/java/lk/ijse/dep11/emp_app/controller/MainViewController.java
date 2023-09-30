@@ -1,15 +1,14 @@
 package lk.ijse.dep11.emp_app.controller;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import lk.ijse.dep11.emp_app.tm.Employee;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainViewController {
@@ -22,6 +21,9 @@ public class MainViewController {
     public TableView<Employee> tbvEmployees;
     public TextField txtSearch;
     public Button btnNew;
+
+    private List<Employee> employeeList = new ArrayList<>();
+    private ObservableList<Employee> observableEmployeeList;
 
     public void initialize(){
 
@@ -50,6 +52,34 @@ public class MainViewController {
     }
 
     public void btnSaveOnAction(ActionEvent actionEvent) {
+        if(!isDataValid()){
+            return;
+        }
+        Employee selectedEmployee = tbvEmployees.getSelectionModel().getSelectedItem();
+        String contact = txtContact.getText().strip();
+        if (observableEmployeeList.stream().anyMatch(employee -> {
+            if (selectedEmployee != null && selectedEmployee.equals(employee)) {
+                return false; // Skip the selected employee
+            }
+            return employee.getContact().equals(contact);
+        })) {
+            new Alert(Alert.AlertType.ERROR, "Contact Already Exists").show();
+            txtContact.requestFocus();
+            txtContact.selectAll();
+            return;
+        }
+        if(tbvEmployees.getSelectionModel().isEmpty()){
+            //New Record
+            Employee newEmployee = new Employee(txtId.getText().strip(), txtName.getText().strip(), txtContact.getText().strip());
+            observableEmployeeList.add(newEmployee);
+            btnNew.fire();
+        }else{
+            //Update
+            selectedEmployee.setName(txtName.getText().strip());
+            selectedEmployee.setContact(txtContact.getText().strip());
+            tbvEmployees.refresh();
+            btnNew.fire();
+        }
     }
 
     public void btnDeleteOnAction(ActionEvent actionEvent) {
