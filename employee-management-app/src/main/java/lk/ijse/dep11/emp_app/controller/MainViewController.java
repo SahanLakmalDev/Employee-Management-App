@@ -1,11 +1,13 @@
 package lk.ijse.dep11.emp_app.controller;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import lk.ijse.dep11.emp_app.handeller.EmployeeHandller;
 import lk.ijse.dep11.emp_app.tm.Employee;
 
 import java.util.ArrayList;
@@ -49,6 +51,13 @@ public class MainViewController {
                 btnDelete.fire();
             }
         });
+
+        //Load existing employee data from the file and convert to an ObservableList
+        employeeList = EmployeeHandller.loadEmployees();
+        observableEmployeeList = FXCollections.observableArrayList(employeeList);
+
+        // Set the ObservableList as the data source for the TableView
+        tbvEmployees.setItems(observableEmployeeList);
     }
 
     public void btnSaveOnAction(ActionEvent actionEvent) {
@@ -80,6 +89,7 @@ public class MainViewController {
             tbvEmployees.refresh();
             btnNew.fire();
         }
+        EmployeeHandller.saveEmployees(observableEmployeeList);
     }
 
     public void btnDeleteOnAction(ActionEvent actionEvent) {
@@ -88,6 +98,7 @@ public class MainViewController {
         if(getEmployeeList().isEmpty()){
             btnNew.fire();
         }
+        EmployeeHandller.saveEmployees(observableEmployeeList);
 
     }
 
