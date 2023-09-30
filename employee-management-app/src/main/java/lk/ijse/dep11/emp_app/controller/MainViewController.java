@@ -6,11 +6,16 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import lk.ijse.dep11.emp_app.handeller.EmployeeHandller;
 import lk.ijse.dep11.emp_app.tm.Employee;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +85,29 @@ public class MainViewController {
                         || employee.getId().toLowerCase().contains(lowerCaseFilter);
             });
         });
+
+        // Enable the TableView to accept file drops
+        tbvEmployees.setOnDragOver(event -> {
+            if (event.getGestureSource() != tbvEmployees && event.getDragboard().hasFiles()) {
+                event.acceptTransferModes(TransferMode.COPY);
+            }
+            event.consume();
+        });
+        // Handle file drop
+        tbvEmployees.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+
+            if (db.hasFiles()) {
+                success = true;
+                File file = db.getFiles().get(0); // Assuming you only allow one file at a time
+                importCSVFile(file);
+            }
+
+            event.setDropCompleted(success);
+            event.consume();
+        });
+
     }
 
     public void btnSaveOnAction(ActionEvent actionEvent) {
@@ -165,5 +193,68 @@ public class MainViewController {
             int newEmpId = Integer.parseInt(lastEmpId.substring(2)) + 1;
             return String.format("E-%03d", newEmpId);
         }
+    }
+
+    private void importCSVFile(File csvFile){
+        List<Employee> employeesToAdd = new ArrayList<>();
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(csvFile));
+            String line;
+            boolean flag = true;
+            try{
+                while((line = br.readLine()) != null){
+                    String[] data = line.split(",");
+                    if(data.length == 3){
+                        String id = data[0].strip();
+                        String name = data[1].strip();
+                        String contact = data[2].strip();
+                        if(isValidId(id) && isValidName(name) && isValidContact(contact)){
+                            for(Employee employee : employeesToAdd){
+                                if(employee.getId().equals(id) || employee.getContact().equals(contact)){
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            if(flag){
+                                Employee newEmployee = new Employee(id, name, contact);
+                                employeesToAdd.add(newEmployee);
+                            }
+
+                        }
+                    }
+
+
+                }
+                observableEmployeeList.addAll(employeesToAdd);
+                EmployeeHandller.saveEmployees(observableEmployeeList);
+                tbvEmployees.refresh();
+            }finally {
+                br.close();
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isValidId(String id){
+        for(Employee employee : observableEmployeeList){
+            if(employee.getId().equals(id)){
+                return false;
+
+            }
+        }
+        return id.matches("E-\\d{3}");
+    }
+    private boolean isValidName(String name){
+        return name.matches("[a-zA-Z ]+");
+    }
+    private boolean isValidContact(String contact){
+        for(Employee employee : observableEmployeeList){
+            if(employee.getContact().equals(contact)){
+                return false;
+            }
+        }
+        return contact.matches("0\\d{2}-\\d{7}");
     }
 }
