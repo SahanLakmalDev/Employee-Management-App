@@ -83,6 +83,12 @@ public class MainViewController {
     }
 
     public void btnDeleteOnAction(ActionEvent actionEvent) {
+        Employee selectedEmployeeToDelete = tbvEmployees.getSelectionModel().getSelectedItem();
+        observableEmployeeList.remove(selectedEmployeeToDelete);
+        if(getEmployeeList().isEmpty()){
+            btnNew.fire();
+        }
+
     }
 
     public void btnNewOnAction(ActionEvent actionEvent) {
