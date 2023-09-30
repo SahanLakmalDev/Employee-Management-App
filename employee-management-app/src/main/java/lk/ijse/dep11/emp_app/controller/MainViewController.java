@@ -7,6 +7,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import lk.ijse.dep11.emp_app.tm.Employee;
 
+import java.util.List;
+
 public class MainViewController {
     public AnchorPane root;
     public TextField txtId;
@@ -27,6 +29,10 @@ public class MainViewController {
     public void btnNewOnAction(ActionEvent actionEvent) {
     }
 
+    private List<Employee> getEmployeeList(){
+        return tbvEmployees.getItems();
+    }
+
     private boolean isDataValid(){
         //Name Validation
         if(!txtName.getText().strip().matches("[a-zA-Z\\s]+")){
@@ -41,5 +47,14 @@ public class MainViewController {
             return false;
         }
         return true;
+    }
+    private String getNewEmployeeId(){
+        if(getEmployeeList().isEmpty()){
+            return "E-001";
+        }else{
+            String lastEmpId = getEmployeeList().get(getEmployeeList().size()-1).getId();
+            int newEmpId = Integer.parseInt(lastEmpId.substring(2)) + 1;
+            return String.format("E-%03d", newEmpId);
+        }
     }
 }
