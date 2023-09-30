@@ -2,6 +2,7 @@ package lk.ijse.dep11.emp_app.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -58,6 +59,27 @@ public class MainViewController {
 
         // Set the ObservableList as the data source for the TableView
         tbvEmployees.setItems(observableEmployeeList);
+
+        //Create Search text field
+        FilteredList<Employee> filteredList = new FilteredList<>(observableEmployeeList, p -> true);
+        //Bind the filtered list to the table view
+        tbvEmployees.setItems(filteredList);
+        // Add a listener to the textProperty of the search TextField
+        txtSearch.textProperty().addListener((observable, old, current) -> {
+            filteredList.setPredicate(employee -> {
+                // If the search field is empty, show all employees
+                if (current == null || current.isEmpty()) {
+                    return true;
+                }
+                // Convert the search string to lowercase for case-insensitive search
+                String lowerCaseFilter = current.toLowerCase();
+
+                // Check if the name or contact contains the search string
+                return employee.getName().toLowerCase().contains(lowerCaseFilter)
+                        || employee.getContact().toLowerCase().contains(lowerCaseFilter)
+                        || employee.getId().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
     }
 
     public void btnSaveOnAction(ActionEvent actionEvent) {
